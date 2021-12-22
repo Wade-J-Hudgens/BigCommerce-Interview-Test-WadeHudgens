@@ -1,0 +1,81 @@
+
+---
+category:
+    shop_by_price: true
+    products:
+        limit: {{theme_settings.categorypage_products_per_page}}
+---
+{{inject "categoryProductsPerPage" theme_settings.categorypage_products_per_page}}
+{{inject "categoryId" category.id}}
+{{#partial "head"}}
+    {{#if pagination.category.previous}}
+        <link rel="prev" href="{{pagination.category.previous}}">
+    {{/if}}
+    {{#if pagination.category.next}}
+        <link rel="next" href="{{pagination.category.next}}">
+    {{/if}}
+{{/partial}}
+
+{{#partial "page"}}
+<div id="ADDEDCART_ALERTBOX" style="font-size: 30px;text-align: center;pointer-events: none;opacity: 0;transition: all 0.5s;z-index: 100;position:fixed;left:0;bottom:0;width:100vw;height: 100px;line-height: 100px;background-color: aqua;color:white;">
+    Added to cart.
+</div>
+<div id="REMOVEDCART_ALERTBOX" style="font-size: 30px;text-align: center;pointer-events: none;opacity: 0;transition: all 0.5s;z-index: 100;position:fixed;left:0;bottom:0;width:100vw;height: 100px;line-height: 100px;background-color: lightcoral;color:white;">
+    Removed from cart.
+</div>
+{{#if customer}}
+    <div style="width:100%;text-align: center;">
+        <label style="display: inline-block; text-align: center; margin: 10px;"><strong>Name: </strong>{{customer.name}}</label>
+        <label style="display: inline-block; text-align: center; margin: 10px;"><strong>Email: </strong>{{customer.email}}</label>
+        <label style="display: inline-block; text-align: center; margin: 10px;"><strong>Phone: </strong>{{customer.phone}}</label>
+        <label style="display: inline-block; text-align: center; margin: 10px;"><strong>Store Credit: </strong>{{customer.store_credit.value}}&nbsp;{{customer.store_credit.currency}}</label>
+    </div>
+    
+{{/if}}
+{{> components/common/breadcrumbs breadcrumbs=breadcrumbs}}
+{{#if category.image}}
+    {{> components/common/responsive-img
+        image=category.image
+        fallback_size=theme_settings.zoom_size
+        lazyload=theme_settings.lazyload_mode
+        class="category-header-image"
+    }}
+{{/if}}
+{{#unless theme_settings.hide_category_page_heading }}
+    <h1 class="page-heading">{{category.name}}</h1>
+    {{{region name="category_below_header"}}}
+{{/unless}}
+{{{category.description}}}
+
+
+<div id="ADD_DELETE_DIV" style="text-align: center;width:100%;">
+    <button class="button" id="ADDALLTOCART_BUTTON"
+    style="width:300px;max-width:100%;display:inline-block;">Add all to cart</button>
+
+</div>
+
+<div class="page">
+    {{#if category.faceted_search_enabled}}
+        <aside class="page-sidebar" id="faceted-search-container">
+            {{> components/category/sidebar}}
+        </aside>
+    {{else if category.subcategories}}
+        <aside class="page-sidebar" id="faceted-search-container">
+            {{> components/category/sidebar}}
+        </aside>
+    {{else if category.shop_by_price}}
+        {{#if theme_settings.shop_by_price_visibility}}
+             <aside class="page-sidebar" id="faceted-search-container">
+                {{> components/category/sidebar}}
+            </aside>
+        {{/if}}
+    {{/if}}
+
+    <div class="page-content" id="product-listing-container">
+        {{> components/category/product-listing}}
+        {{{region name="category_below_content"}}}
+    </div>
+</div>
+
+{{/partial}}
+{{> layout/base}}
