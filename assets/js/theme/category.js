@@ -105,24 +105,27 @@ export default class Category extends CatalogPage {
         });
     }
 
-    //This adds special item to the cart
+    //This adds all of the products in the special items category to the cart
     addToCart() {
+        var lineItemsArray = [];
+        for (var i = 0; i < lineI.length; i++) {
+            let lineItemToAdd = {
+                "quantity": 1,
+                "productId": lineI[i].id
+            }
+            lineItemsArray.push(lineItemToAdd);
+        }
+
         $.ajax({
             type: "POST",
             url: 'https://wade-hudgens6.mybigcommerce.com/api/storefront/carts',
             data: JSON.stringify({
-                "lineItems": [
-                    {
-                      "quantity": 1,
-                      "productId": 112
-                    }
-                ]
+                "lineItems": lineItemsArray
             }),
             success: (function(response) {
                 document.getElementById("REMOVEDCART_ALERTBOX").style.opacity = "0";
                 document.getElementById("ADDEDCART_ALERTBOX").style.opacity = "0.8";
                 setTimeout(()=>{document.getElementById("ADDEDCART_ALERTBOX").style.opacity = "0";location.reload()}, 750);
-                checkCart();
             })
         });
 

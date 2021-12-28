@@ -15,7 +15,7 @@ category:
         <link rel="next" href="{{pagination.category.next}}">
     {{/if}}
 {{/partial}}
-
+<script>var lineI = {{{json category.products}}}</script>
 {{#partial "page"}}
 <div id="ADDEDCART_ALERTBOX" style="font-size: 30px;text-align: center;pointer-events: none;opacity: 0;transition: all 0.5s;z-index: 100;position:fixed;left:0;bottom:0;width:100vw;height: 100px;line-height: 100px;background-color: aqua;color:white;">
     Added to cart.
