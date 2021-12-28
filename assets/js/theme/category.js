@@ -3,6 +3,7 @@ import CatalogPage from './catalog';
 import compareProducts from './global/compare-products';
 import FacetedSearch from './common/faceted-search';
 import { createTranslationDictionary } from '../theme/common/utils/translations-utils';
+import urlUtils from './common/utils/url-utils';
 
 export default class Category extends CatalogPage {
     constructor(context) {
@@ -105,30 +106,35 @@ export default class Category extends CatalogPage {
         });
     }
 
-    //This adds all of the products in the special items category to the cart
+    //This adds all of the products in the special items category to the cart.
     addToCart() {
         var lineItemsArray = [];
         for (var i = 0; i < lineI.length; i++) {
-            let lineItemToAdd = {
-                "quantity": 1,
-                "productId": lineI[i].id
+            if (!lineI[i].has_options) {
+                let lineItemToAdd = {
+                    "quantity": 1,
+                    "productId": lineI[i].id
+                }
+                lineItemsArray.push(lineItemToAdd);
             }
-            lineItemsArray.push(lineItemToAdd);
         }
-
-        $.ajax({
-            type: "POST",
-            url: 'https://wade-hudgens6.mybigcommerce.com/api/storefront/carts',
-            data: JSON.stringify({
-                "lineItems": lineItemsArray
-            }),
-            success: (function(response) {
-                document.getElementById("REMOVEDCART_ALERTBOX").style.opacity = "0";
-                document.getElementById("ADDEDCART_ALERTBOX").style.opacity = "0.8";
-                setTimeout(()=>{document.getElementById("ADDEDCART_ALERTBOX").style.opacity = "0";location.reload()}, 750);
-            })
-        });
-
+        if (lineItemsArray.length !== 0) {
+            $.ajax({
+                type: "POST",
+                url: 'https://wade-hudgens6.mybigcommerce.com/api/storefront/carts',
+                data: JSON.stringify({
+                    "lineItems": lineItemsArray
+                }),
+                success: (function(response) {
+                    document.getElementById("REMOVEDCART_ALERTBOX").style.opacity = "0";
+                    document.getElementById("ADDEDCART_ALERTBOX").style.opacity = "0.8";
+                    setTimeout(()=>{document.getElementById("ADDEDCART_ALERTBOX").style.opacity = "0";location.reload()}, 750);
+                })
+            });
+        }
+        else {
+            alert("No items to add");
+        }
         
     }
 
